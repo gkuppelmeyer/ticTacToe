@@ -1,0 +1,15 @@
+.game-grid-cell {
+
+	text-align: center;
+	height: 50px;
+	width: 50px;
+	border: 1px solid;		
+	font-family: verdana, sans-serif;
+	background-color: #ddd;
+	
+}
+
+.game-grid-view {
+	text-align: center;
+	margin: auto;
+}
