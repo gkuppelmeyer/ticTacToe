@@ -7,7 +7,7 @@ function createTable(rows,columns){
 
 		for(j = 0; j < columns; j++){
 			var tableCell = tableRow.appendChild(document.createElement("td"));
-			
+			tableCell.className = "game-grid-cell";
 			
 			tableCell.appendChild(document.createTextNode("X"));
 			
@@ -19,9 +19,6 @@ function createTable(rows,columns){
 			tableCell.style.backgroundColor = "#ddd";
 			tableCell.style.border = "1px solid";
 			*/
-
-			tableCell.className = "game-grid-cell";
-			
 		}
 	}
 
@@ -33,7 +30,7 @@ function createTable(rows,columns){
 }
 
 function setCellText(row, col, str){
-	var tableCellRow = document.getElementsByTagName("tr")[row-1];
-	var tableCell = tableCellRow.getElementsByTagName("td")[col-1];
+	var tableCellRow = document.getElementsByTagName("tr")[row];
+	var tableCell = tableCellRow.getElementsByTagName("td")[col];
 	tableCell.textContent = str;
 }
