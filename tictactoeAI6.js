@@ -174,22 +174,35 @@ var modelPrototype = {
 	newGame: function(rows, columns) {
 		var newGame = new Model(rows, columns);
 	},
+
 	/**
-		* Makes a copy of the board.
+		* Makes a copy of the model and board.
 		* @function
 		* @param {constructor} board - the model.
 	*/
-	copyBoard: function(board) {
-		var copy = [];
-		for (var i = 0; i < board.rows; i++) {
-			var rowsCopy = [];
-			copy.push(rowsCopy);
-			for (var j = 0; j < board.columns; j++){
-				copy[i][j] = board.board[i][j];
+	copyModel: function(model) {
+		
+		function copyBoard(model) {
+			var copy = [];
+			for (var i = 0; i < model.rows; i++) {
+				var rowsCopy = [];
+				copy.push(rowsCopy);
+				for (var j = 0; j < model.columns; j++){
+					copy[i][j] = model.board[i][j];
+				}
 			}
-		}
-		return copy;
+			return copy;
 
+		}
+		
+		var newModel = new Model(model.rows, model.columns);
+		newModel.board = copyBoard(model);
+		newModel.playerList = model.playerList;
+		newModel.gameOver = model.gameOver;
+		newModel.changeListeners = model.changeListeners;
+		newModel.currentPlayerIndex = model.currentPlayerIndex;
+		newModel.numOfMoves = model.numOfMoves;
+		return newModel;
 	},
 
 	addChangeListeners: function(f){
@@ -255,31 +268,28 @@ function getBestOutcome(boardPosition, isMaximizingPlayer){
 		* Makes a copy of the board object
 	*/
 
-	var boardPosition_copy = boardPosition.copyBoard(boardPosition);
-
     for (var i = 0; i < boardPosition.rows; i++) {
     	for (var j = 0; j < boardPosition.columns; j++) {
     		if (boardPosition.isValidMove(i,j)){
-    			var m = new Model(i,j);
-    			m.board = boardPosition_copy;
+    			var m = boardPosition.copyModel(boardPosition);
+    			
+    			
 
     			if (isMaximizingPlayer = true)  {
-    				recurOutcome = getBestOutcome(boardPosition_copy, false);
+    				recurOutcome = getBestOutcome(m.board, false);
     				if(recurOutcome > max){
     					max = recurOutcome;
     				}
 
     			} else {
-    				recurOutcome = getBestOutcome(boardPosition_copy, true);
+    				recurOutcome = getBestOutcome(m.board, true);
     				if(recurOutcome < min){
     					min = recurOutcome;
     				}
     			}
-    		}
-    		
+    		}		
     	}
 	}
- 
 }
 
 var mod = new Model(3,3);
