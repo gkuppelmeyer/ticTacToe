@@ -7,24 +7,8 @@ console.log("Model loaded");
 	* @param {number} columns - The number of columns of the Model.
 */
 function Model(rows, columns) { // Constructor
-	this.rows = rows;
-	this.columns = columns;
-	this.board = [];
-
-	for (var i = 0; i < rows; i++) {
-		var rowArray = [];
-		for (var j = 0; j < columns; j++){
-			rowArray.push("");
-		}
-		this.board.push(rowArray);
-	}
-	this.playerList = [];
-	this.gameOver = false;
-	this.changeListeners = [];
-	this.currentPlayerIndex = 0;
-	this.numOfMoves = 0;
-
-};
+	this.newGame(rows,columns);
+}
 
 /**
 	* @prototype
@@ -39,7 +23,7 @@ var modelPrototype = {
 		* @param {number} col - The column of the cell.
 	*/
 	isValidMove: function(row,col){
-		if (this.getPlayer(row,col) == ""){
+		if (this.getPlayer(row,col) === ""){
 			return true;
 		} else {
 			return false;
@@ -81,27 +65,27 @@ var modelPrototype = {
 	*/
 	playerWin: function(){
 		var winner;
-		if (this.getPlayer(0,0) === this.getPlayer(0,1) && this.getPlayer(0,0) === this.getPlayer(0,2) && this.getPlayer(0,0) != ""){
+		if (this.getPlayer(0,0) === this.getPlayer(0,1) && this.getPlayer(0,0) === this.getPlayer(0,2) && this.getPlayer(0,0) !== ""){
 			winner = this.getPlayer(0,0);
 			this.gameOver = true;
 			return winner;
 		} 
-		else if (this.getPlayer(1,0) === this.getPlayer(1,1) && this.getPlayer(1,0) === this.getPlayer(1,2) && this.getPlayer(1,0) != ""){
+		else if (this.getPlayer(1,0) === this.getPlayer(1,1) && this.getPlayer(1,0) === this.getPlayer(1,2) && this.getPlayer(1,0) !== ""){
 			winner = this.getPlayer(1,0);
 			this.gameOver = true;
 			return winner;
 		}
-		else if (this.getPlayer(2,0) === this.getPlayer(2,1) && this.getPlayer(2,0) === this.getPlayer(2,2) && this.getPlayer(2,0) != ""){		
+		else if (this.getPlayer(2,0) === this.getPlayer(2,1) && this.getPlayer(2,0) === this.getPlayer(2,2) && this.getPlayer(2,0) !== ""){		
 			winner = this.getPlayer(2,0);
 			this.gameOver = true;
 			return winner;
 		}
-		else if (this.getPlayer(0,0) === this.getPlayer(1,0) && this.getPlayer(0,0) === this.getPlayer(2,0) && this.getPlayer(0,0) != ""){			
+		else if (this.getPlayer(0,0) === this.getPlayer(1,0) && this.getPlayer(0,0) === this.getPlayer(2,0) && this.getPlayer(0,0) !== ""){			
 			winner = this.getPlayer(0,0);
 			this.gameOver = true;
 			return winner;
 		}
-		else if (this.getPlayer(0,1) === this.getPlayer(1,1) && this.getPlayer(0,1) === this.getPlayer(2,1) && this.getPlayer(0,1) != ""){
+		else if (this.getPlayer(0,1) === this.getPlayer(1,1) && this.getPlayer(0,1) === this.getPlayer(2,1) && this.getPlayer(0,1) !== ""){
 			winner = this.getPlayer(0,1);
 			this.gameOver = true;
 			return winner;
@@ -111,12 +95,12 @@ var modelPrototype = {
 			this.gameOver = true;
 			return winner;
 		}
-		else if (this.getPlayer(0,0) === this.getPlayer(1,1) && this.getPlayer(0,0) === this.getPlayer(2,2) && this.getPlayer(0,0) != ""){	
+		else if (this.getPlayer(0,0) === this.getPlayer(1,1) && this.getPlayer(0,0) === this.getPlayer(2,2) && this.getPlayer(0,0) !== ""){	
 			winner = this.getPlayer(0,0);
 			this.gameOver = true;
 			return winner;
 		}
-		else if (this.getPlayer(2,0) === this.getPlayer(1,1) && this.getPlayer(2,0) === this.getPlayer(0,2) && this.getPlayer(2,0) != ""){
+		else if (this.getPlayer(2,0) === this.getPlayer(1,1) && this.getPlayer(2,0) === this.getPlayer(0,2) && this.getPlayer(2,0) !== ""){
 			winner = this.getPlayer(2,0);
 			this.gameOver = true;
 			return winner;
@@ -172,7 +156,23 @@ var modelPrototype = {
 		* @param {number} columns - The columns of the table.
 	*/
 	newGame: function(rows, columns) {
-		var newGame = new Model(rows, columns);
+		this.rows = rows;
+		this.columns = columns;
+		this.board = [];
+
+		for (var i = 0; i < rows; i++) {
+			var rowArray = [];
+			for (var j = 0; j < columns; j++){
+				rowArray.push("");
+			}
+			this.board.push(rowArray);
+		}
+		this.playerList = [];
+		this.gameOver = false;
+		this.changeListeners = [];
+		this.currentPlayerIndex = 0;
+		this.numOfMoves = 0;
+
 	},
 
 	/**
@@ -210,7 +210,7 @@ var modelPrototype = {
 	},
 
 	notify: function(type){
-		for (var i = 0; i < this.myChangeListeners.length; i++){
+		for (var i = 0; i < this.changeListeners.length; i++){
 			this.changeListeners[i]({change:type});
 		}
 	},
@@ -223,18 +223,14 @@ Model.prototype = modelPrototype;
 
 
 function gameState(boardPosition){
-	var outcome;
 	if(boardPosition.isDraw()){
-		outcome = 0;
-		return outcome;
+		return 0;
 	} 
-	if (!boardPosition.playerWin() === "") {
+	else if (!(boardPosition.playerWin()) == "") {
 		if(boardPosition.playerWin() === boardPosition.playerList[0]){
-		outcome = 1;
-			return outcome;
+			return 1;
 		} else {
-			outcome = -1;
-			return outcome;
+			return -1;
 		}
 	}
 	return false;
@@ -255,48 +251,66 @@ function getBestOutcome(boardPosition, isMaximizingPlayer){
 	var min = Infinity;
 	var max = -Infinity;
 
-
 	/**
 		* Base Case
 	*/
-
+	
 	if(gameState(boardPosition) !== false){
 		return gameState(boardPosition);
 	}
-
-	/**
-		* Makes a copy of the board object
-	*/
-
-    for (var i = 0; i < boardPosition.rows; i++) {
-    	for (var j = 0; j < boardPosition.columns; j++) {
-    		if (boardPosition.isValidMove(i,j)){
-    			var m = boardPosition.copyModel(boardPosition);
-    			
-    			
-
-    			if (isMaximizingPlayer = true)  {
-    				recurOutcome = getBestOutcome(m.board, false);
-    				if(recurOutcome > max){
-    					max = recurOutcome;
-    				}
-
-    			} else {
-    				recurOutcome = getBestOutcome(m.board, true);
-    				if(recurOutcome < min){
-    					min = recurOutcome;
-    				}
-    			}
-    		}		
-    	}
+	
+	/*
+	if (boardPosition.isDraw()){
+		return 0;
 	}
+	else if (boardPosition.playerWin() == boardPosition.playerList[0]){
+		return 1
+	}
+	else if (boardPosition.playerWin() == boardPosition.playerList[1]){
+		return -1	
+	}
+	*/
+	//else {
+
+    	for (var i = 0; i < boardPosition.rows; i++) {
+    		for (var j = 0; j < boardPosition.columns; j++) {
+    			if (boardPosition.isValidMove(i,j)){
+    				var m = boardPosition.copyModel(boardPosition);
+    				m.makeMove(i,j);
+
+    				if (isMaximizingPlayer)  {
+
+    					recurOutcome = getBestOutcome(m, false);
+    					if(recurOutcome > max){
+    						max = recurOutcome;
+
+    					}
+
+    				} else {
+
+    					recurOutcome = getBestOutcome(m, true);
+    					if(recurOutcome < min){
+    						min = recurOutcome;
+
+    					}
+    				}
+    			}		
+    		}
+		}
+		return isMaximizingPlayer ? max:min;
+	//}
 }
 
 var mod = new Model(3,3);
 mod.addPlayer("X");
 mod.addPlayer("O");
-console.log(mod.board);
-console.log(mod.gameOver);
-console.log(mod.playerWin());
-console.log(mod.isDraw());
+
+mod.board = [ 
+			["X"], ["X"], ["O"], 
+			["X"], ["O"], ["X"], 
+			[""], ["O"], ["O"] 
+			];
+mod.numOfMoves = 8;
+
+
 console.log(getBestOutcome(mod,true));
