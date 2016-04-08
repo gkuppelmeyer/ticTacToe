@@ -227,7 +227,7 @@ function gameState(boardPosition){
 		return 0;
 	} 
 	else if (!(boardPosition.playerWin()) == "") {
-		if(boardPosition.playerWin() === boardPosition.playerList[0]){
+		if(boardPosition.playerWin() == boardPosition.playerList[0]){
 			return 1;
 		} else {
 			return -1;
@@ -247,7 +247,6 @@ function gameState(boardPosition){
 
 
 function getBestOutcome(boardPosition, isMaximizingPlayer){
-	var recurOutcome;
 	var min = Infinity;
 	var max = -Infinity;
 
@@ -277,19 +276,21 @@ function getBestOutcome(boardPosition, isMaximizingPlayer){
     			if (boardPosition.isValidMove(i,j)){
     				var m = boardPosition.copyModel(boardPosition);
     				m.makeMove(i,j);
-
+    				console.log(m.board);
     				if (isMaximizingPlayer)  {
 
-    					recurOutcome = getBestOutcome(m, false);
+    					var recurOutcome = getBestOutcome(m, false);
     					if(recurOutcome > max){
+    						//console.log(max);
     						max = recurOutcome;
 
     					}
 
     				} else {
 
-    					recurOutcome = getBestOutcome(m, true);
+    					var recurOutcome = getBestOutcome(m, true);
     					if(recurOutcome < min){
+    						//console.log(min);
     						min = recurOutcome;
 
     					}
@@ -297,20 +298,27 @@ function getBestOutcome(boardPosition, isMaximizingPlayer){
     			}		
     		}
 		}
-		return isMaximizingPlayer ? max:min;
+		return isMaximizingPlayer ? max : min;
 	//}
 }
 
 var mod = new Model(3,3);
 mod.addPlayer("X");
 mod.addPlayer("O");
-
-mod.board = [ 
-			["X"], ["X"], ["O"], 
-			["X"], ["O"], ["X"], 
-			[""], ["O"], ["O"] 
-			];
-mod.numOfMoves = 8;
-
-
-console.log(getBestOutcome(mod,true));
+/*
+mod.board[0][0] = "";
+mod.board[0][1] = "";
+mod.board[0][2] = "";
+mod.board[1][0] = "";
+mod.board[1][1] = "";
+mod.board[1][2] = "";
+mod.board[2][0] = "";
+mod.board[2][1] = "";
+mod.board[2][2] = "";
+mod.numOfMoves = 0;
+*/
+console.log(mod.board);
+console.log(gameState(mod));
+console.log(mod.playerWin());
+console.log(mod.isDraw());
+console.log(getBestOutcome(mod,false));
