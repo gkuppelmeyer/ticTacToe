@@ -224,13 +224,25 @@ Model.prototype = modelPrototype;
 
 function gameState(boardPosition){
 	if(boardPosition.isDraw()){
-		return 0;
+		return {
+			row: -1,
+			col: -1,
+			val: 0
+		};
 	} 
-	else if (!(boardPosition.playerWin()) == "") {
+	else if ((boardPosition.playerWin()) != "") {
 		if(boardPosition.playerWin() === boardPosition.playerList[0]){
-			return 1;
+			return {
+				row: -1,
+				col: -1,
+				val: 1
+			};
 		} else {
-			return -1;
+			return {
+				row: -1,
+				col: -1,
+				val: -1
+			};
 		}
 	}
 	return false;
@@ -274,11 +286,11 @@ function getBestOutcome(boardPosition, isMaximizingPlayer){
     			var m = boardPosition.copyModel(boardPosition);
     			m.makeMove(i,j);
     			//console.log(boardPosition.board);
-    			if (isMaximizingPlayer === true)  {
+    			if (isMaximizingPlayer)  {
 
     				recurOutcome = getBestOutcome(m, false);
-    				if(recurOutcome > max.val){
-    					max.val = recurOutcome;
+    				if(recurOutcome.val > max.val){
+    					max.val = recurOutcome.val;
     					max.row = i;
     					max.col = j;
     					console.log(max);
@@ -287,8 +299,8 @@ function getBestOutcome(boardPosition, isMaximizingPlayer){
     			} else {
 
     				recurOutcome = getBestOutcome(m, true);
-    				if(recurOutcome < min.val){
-    					min.val = recurOutcome;
+    				if(recurOutcome.val < min.val){
+    					min.val = recurOutcome.val;
 						min.row = i;
 						min.col = j;
 						console.log(min);
@@ -314,9 +326,49 @@ mod.board[2][0] = "X";
 mod.board[2][1] = "O";
 mod.board[2][2] = "O";
 mod.numOfMoves = 9;
-*/
+
 console.log(mod.board);
-console.log(gameState(mod));
 console.log(mod.playerWin());
 console.log(mod.isDraw());
-console.log(getBestOutcome(mod,true));
+
+var Xmove1 = getBestOutcome(mod,true);
+mod.makeMove(Xmove1.row, Xmove1.col);
+console.log(mod.board);
+
+var Omove1 = getBestOutcome(mod,false);
+mod.makeMove(Omove1.row, Omove1.col);
+console.log(mod.board);
+
+var Xmove2 = getBestOutcome(mod,true);
+mod.makeMove(Xmove2.row, Xmove2.col);
+console.log(mod.board);
+
+var Omove2 = getBestOutcome(mod,false);
+mod.makeMove(Omove2.row, Omove2.col);
+console.log(mod.board);
+
+var Xmove3 = getBestOutcome(mod,true);
+mod.makeMove(Xmove3.row, Xmove3.col);
+console.log(mod.board);
+
+var Omove3 = getBestOutcome(mod,false);
+mod.makeMove(Omove3.row, Omove3.col);
+console.log(mod.board);
+
+var Xmove4 = getBestOutcome(mod,true);
+mod.makeMove(Xmove4.row, Xmove4.col);
+console.log(mod.board);
+
+var Omove4 = getBestOutcome(mod,false);
+mod.makeMove(Omove4.row, Omove4.col);
+console.log(mod.board);
+
+var Xmove5 = getBestOutcome(mod,true);
+mod.makeMove(Xmove5.row, Xmove5.col);
+console.log(mod.board);
+Ended in tie.
+console.log(mod.playerWin());
+console.log(mod.numOfMoves);
+*/
+
+
